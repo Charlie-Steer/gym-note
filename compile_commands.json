@@ -1,0 +1,38 @@
+[
+    {
+        "directory":  "D:\\Projects\\Code\\gym_note",
+        "file":  "src/main.c",
+        "output":  "build/main.o",
+        "arguments":  [
+                          "C:\\Program Files\\LLVM\\bin\\clang.exe",
+                          "-xc",
+                          "src/main.c",
+                          "-o",
+                          "build/main.o",
+                          "-c",
+                          "-I",
+                          "SDL3",
+                          "-I",
+                          "SDL3\\SDL3",
+                          "--target=x86_64-pc-windows-msvc19.50.35721"
+                      ]
+    },
+    {
+        "directory":  "D:\\Projects\\Code\\gym_note",
+        "file":  "src/test1.c",
+        "output":  "build/test1.o",
+        "arguments":  [
+                          "C:\\Program Files\\LLVM\\bin\\clang.exe",
+                          "-xc",
+                          "src/test1.c",
+                          "-o",
+                          "build/test1.o",
+                          "-c",
+                          "-I",
+                          "SDL3",
+                          "-I",
+                          "SDL3\\SDL3",
+                          "--target=x86_64-pc-windows-msvc19.50.35721"
+                      ]
+    }
+]
