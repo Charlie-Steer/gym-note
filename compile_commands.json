@@ -1,44 +1,44 @@
 [
-	{
-		"directory":  "D:/Projects/Code/gym_note",
-		"file":  "D:/Projects/Code/gym_note/src/arena.c",
-		"arguments":  [
-						  "clang",
-						  "-Ilibs/include",
-						  "-include",
-						  "UNITY_BUILD.c",
-						  "D:/Projects/Code/gym_note/src/arena.c"
-					  ]
-	},
-	{
-		"directory":  "D:/Projects/Code/gym_note",
-		"file":  "D:/Projects/Code/gym_note/src/main.c",
-		"arguments":  [
-						  "clang",
-						  "-Ilibs/include",
-						  "-include",
-						  "UNITY_BUILD.c",
-						  "D:/Projects/Code/gym_note/src/main.c"
-					  ]
-	},
-	{
-		"directory":  "D:/Projects/Code/gym_note",
-		"file":  "D:/Projects/Code/gym_note/src/UNITY_BUILD.c",
-		"arguments":  [
-						  "clang",
-						  "-Ilibs/include",
-						  "D:/Projects/Code/gym_note/src/UNITY_BUILD.c"
-					  ]
-	},
-	{
-		"directory":  "D:/Projects/Code/gym_note",
-		"file":  "D:/Projects/Code/gym_note/src/utils.c",
-		"arguments":  [
-						  "clang",
-						  "-Ilibs/include",
-						  "-include",
-						  "UNITY_BUILD.c",
-						  "D:/Projects/Code/gym_note/src/utils.c"
-					  ]
-	}
+    {
+        "directory":  "D:/Projects/Code/gym_note",
+        "file":  "D:/Projects/Code/gym_note/src/arena.c",
+        "arguments":  [
+                          "clang",
+                          "-Ilibs/include",
+                          "-include",
+                          "UNITY_BUILD.c",
+                          "D:/Projects/Code/gym_note/src/arena.c"
+                      ]
+    },
+    {
+        "directory":  "D:/Projects/Code/gym_note",
+        "file":  "D:/Projects/Code/gym_note/src/main.c",
+        "arguments":  [
+                          "clang",
+                          "-Ilibs/include",
+                          "-include",
+                          "UNITY_BUILD.c",
+                          "D:/Projects/Code/gym_note/src/main.c"
+                      ]
+    },
+    {
+        "directory":  "D:/Projects/Code/gym_note",
+        "file":  "D:/Projects/Code/gym_note/src/UNITY_BUILD.c",
+        "arguments":  [
+                          "clang",
+                          "-Ilibs/include",
+                          "D:/Projects/Code/gym_note/src/UNITY_BUILD.c"
+                      ]
+    },
+    {
+        "directory":  "D:/Projects/Code/gym_note",
+        "file":  "D:/Projects/Code/gym_note/src/utils.c",
+        "arguments":  [
+                          "clang",
+                          "-Ilibs/include",
+                          "-include",
+                          "UNITY_BUILD.c",
+                          "D:/Projects/Code/gym_note/src/utils.c"
+                      ]
+    }
 ]

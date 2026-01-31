@@ -1,6 +1,5 @@
 // #define SDL_MAIN_HANDLED
 
-
 U64 get_cstring_length(char *text) {
 	int string_index = 0;
 	for (; text[string_index] != '\0'; string_index++);
@@ -52,6 +51,30 @@ int main(void) {
 	Arena frame_arena;
 	arena_init(&frame_arena, 1 * GIGABYTE);
 
+	if (!TTF_Init()) {
+		SDL_Log("Could not initialize SDL_ttf: %s", SDL_GetError());
+		return -1;
+	}
+
+	// Create the renderer engine
+	TTF_TextEngine *engine = TTF_CreateRendererTextEngine(renderer);
+	if (!engine) {
+		SDL_Log("Engine failure: %s", SDL_GetError());
+	}
+
+	// Open your font as usual
+	TTF_Font *font = TTF_OpenFont("assets/PlaywriteGBJGuides-Regular.ttf", 24.0f);
+	if (!font) {
+		SDL_Log("Couldn't open text: %s", SDL_GetError());
+	}
+
+	// Create the text object
+	// The '0' indicates the string is null-terminated
+	TTF_Text *text = TTF_CreateText(engine, font, "Hello SDL3!", 0);
+
+	// You can set the color directly on the object
+	TTF_SetTextColor(text, 255, 255, 255, 255); // White
+
 	bool window_should_close = false;
 	while (!window_should_close) {
 		SDL_Event e;
@@ -71,7 +94,12 @@ int main(void) {
 		SDL_SetRenderDrawColorFloat(renderer, 1 * brightness, 1 * brightness, 1 * brightness, 1);
 		SDL_RenderClear(renderer);
 
-		// SDL_text
+		// SDL_TTF
+		// Simple one-line draw command
+		TTF_DrawRendererText(text, 100.0f, 100.0f);
+		SDL_FRect rect = {100, 100, 100, 50};
+		SDL_SetRenderDrawColorFloat(renderer, 1, 0, 0, 1);
+		SDL_RenderFillRect(renderer, &rect);
 
 		SDL_RenderPresent(renderer);
 
@@ -79,6 +107,10 @@ int main(void) {
 		arena_clear(&frame_arena);
 	}
 
+	TTF_DestroyText(text);
+	TTF_DestroyRendererTextEngine(engine);
+	TTF_CloseFont(font);
+	TTF_Quit();
 	SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window.handle);
     SDL_Quit();
