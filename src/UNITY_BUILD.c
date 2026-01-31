@@ -12,9 +12,8 @@
 // My files.
 #include "types.h"
 
-// #ifndef LSP_PARSE
-#include "charlies_utils.c"
+#include "utils.c"
 #include "arena.c"
 
+
 #include "main.c"
-// #endif

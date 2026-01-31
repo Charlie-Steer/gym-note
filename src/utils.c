@@ -1,5 +1,3 @@
-#pragma once
-
 void log_error(Error error) {
 	char *error_message;
 	switch (error) {
