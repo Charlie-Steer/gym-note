@@ -1,55 +1,88 @@
-NAME = gym_note.exe
+.DEFAULT_GOAL := all
+
+PROGRAM = bin/gym_note.exe
 
 CC = clang
 
-SDL_DIR = SDL3
+CFLAGS = -Ilibs/include
+LDFLAGS = -Llibs/lib -lSDL3 -lSDL3_ttf
 
-CFLAGS  = -I$(SDL_DIR) -I$(SDL_DIR)\SDL3
-LDFLAGS = -L$(SDL_DIR) -lSDL3
+SRCS = $(wildcard src/*.c)
 
-SRC_DIR = src
-BUILD_DIR = build
+UNITY_NAME = UNITY_BUILD.c
+UNITY_FILE = src/$(UNITY_NAME)
+UNITY_OBJECT = $(UNITY_FILE:src/%.c=build/%.o)
 
-SRCS = \
-	src/main.c \
-	src/test1.c
+$(UNITY_OBJECT): $(UNITY_FILE)
+	if not exist build mkdir build
+	$(CC) -c $< -o $@ $(CFLAGS)
 
-OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
-JSONS = $(OBJS:.o=.json)
+$(PROGRAM): $(UNITY_OBJECT) $(SRCS)
+	$(CC) $(UNITY_OBJECT) -o $(PROGRAM) $(LDFLAGS)
 
-
-all: $(NAME) compile_commands.json
+all: $(PROGRAM) compile_commands.json
 
 re: fclean all
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	if not exist $(BUILD_DIR) mkdir $(BUILD_DIR)
-	$(CC) -c $< -o $@ $(CFLAGS) -MJ $(BUILD_DIR)/$*.json
+run: all
+	bin/gym_note.exe
 
-$(NAME): $(OBJS)
-	$(CC) $(OBJS) -o $(NAME) $(LDFLAGS)
+rerun: re
+	bin/gym_note.exe
 
-# AI generated command. Single line JSON.
-# compile_commands.json: $(OBJS)
-# 	powershell -NoProfile -Command "$$j = Get-Content -Raw $(JSONS) | %% { $$_ -replace ',\s*$$','' }; '[' + ($$j -join ',') + ']' | Set-Content $@"
+# compile_commands.json: $(UNITY_FILE)
+# 	powershell -NoProfile -Command "$$files = Get-ChildItem src -Filter *.c; \
+# 	$$entries = @(); \
+# 	$$dir = (Get-Location).Path.Replace('\','/'); \
+# 	foreach ($$f in $$files) { \
+# 	    $$path = $$f.FullName.Replace('\','/'); \
+# 		if ($$f.Name -eq '$(UNITY_NAME)') { \
+# 				$$args = @('clang','-Ilibs/include',$$path); \
+# 			} else { \
+# 				$$args = @('clang','-Ilibs/include','-DLSP_PARSE','-include','src/UNITY_BUILD.c',$$path); \
+# 			} \
+# 	    $$entries += [pscustomobject]@{ directory=$$dir; file=$$path; arguments=$$args }; \
+# 	}; \
+# 	$$entries | ConvertTo-Json -Depth 3 | Set-Content compile_commands.json"
 
-# AI generated command. Multi-line JSON.
-compile_commands.json: $(OBJS)
-	powershell -NoProfile -Command "\
-	$$files = Get-ChildItem '$(BUILD_DIR)\\*.json'; \
-	$$list = @(); \
+# AI generated command.
+compile_commands.json: $(UNITY_FILE)
+	powershell -NoProfile -Command "$$files = Get-ChildItem src -Filter *.c; \
+	$$entries = @(); \
+	$$dir = (Get-Location).Path.Replace('\','/'); \
 	foreach ($$f in $$files) { \
-	    $$raw = Get-Content $$f -Raw; \
-	    $$clean = $$raw -replace ',\s*$$',''; \
-	    $$list += ($$clean | ConvertFrom-Json); \
+	    $$path = $$f.FullName.Replace('\','/'); \
+	    if ($$f.Name -eq '$(UNITY_NAME)') { \
+	        $$args = @('clang','-Ilibs/include',$$path); \
+	    } else { \
+	        $$args = @('clang','-Ilibs/include','-include','$(UNITY_NAME)',$$path); \
+	    } \
+	    $$entries += [pscustomobject]@{ directory=$$dir; file=$$path; arguments=$$args }; \
 	}; \
-	ConvertTo-Json -InputObject $$list -Depth 5 | Set-Content '$@'"
+	$$entries | ConvertTo-Json -Depth 3 | Set-Content compile_commands.json"
+
+# compile_commands.json: $(UNITY_FILE)
+# 	@echo Generating $@...
+# 	@powershell -NoProfile -Command "$$files = Get-ChildItem src -Filter *.c; \
+# 	$$entries = @(); \
+# 	$$dir = (Get-Location).Path.Replace('\','/'); \
+# 	$$unityPath = \"$$dir/$(UNITY_FILE)\"; \
+# 	foreach ($$f in $$files) { \
+# 	    $$path = $$f.FullName.Replace('\','/'); \
+# 	    if ($$f.Name -eq '$(UNITY_NAME)') { \
+# 	        $$args = @('clang','-Ilibs/include',$$path); \
+# 	    } else { \
+# 	        $$args = @('clang','-Ilibs/include','-include',$$unityPath,$$path); \
+# 	    } \
+# 	    $$entries += [pscustomobject]@{ directory=$$dir; file=$$path; arguments=$$args }; \
+# 	}; \
+# 	$$entries | ConvertTo-Json -Depth 3 | Set-Content compile_commands.json"
 
 clean:
-	-rmdir /s /q $(BUILD_DIR)
+	-rmdir /s /q build
 	-del compile_commands.json
 
 fclean: clean
-	-del $(NAME)
+	-del bin\gym_note.exe
 
-.PHONY: all re clean fclean
+.PHONY: all re clean fclean run rerun
