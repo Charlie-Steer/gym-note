@@ -10,10 +10,11 @@
 #include <SDL3_ttf/SDL_textengine.h>
 
 // My files.
-#include "types.h"
+#include "types.c"
 
 #include "utils.c"
 #include "arena.c"
+#include "ui.c"
 
 
 #include "main.c"

@@ -23,6 +23,28 @@
     },
     {
         "directory":  "D:/Projects/Code/gym_note",
+        "file":  "D:/Projects/Code/gym_note/src/types.c",
+        "arguments":  [
+                          "clang",
+                          "-Ilibs/include",
+                          "-include",
+                          "UNITY_BUILD.c",
+                          "D:/Projects/Code/gym_note/src/types.c"
+                      ]
+    },
+    {
+        "directory":  "D:/Projects/Code/gym_note",
+        "file":  "D:/Projects/Code/gym_note/src/ui.c",
+        "arguments":  [
+                          "clang",
+                          "-Ilibs/include",
+                          "-include",
+                          "UNITY_BUILD.c",
+                          "D:/Projects/Code/gym_note/src/ui.c"
+                      ]
+    },
+    {
+        "directory":  "D:/Projects/Code/gym_note",
         "file":  "D:/Projects/Code/gym_note/src/UNITY_BUILD.c",
         "arguments":  [
                           "clang",
@@ -39,6 +61,17 @@
                           "-include",
                           "UNITY_BUILD.c",
                           "D:/Projects/Code/gym_note/src/utils.c"
+                      ]
+    },
+    {
+        "directory":  "D:/Projects/Code/gym_note",
+        "file":  "D:/Projects/Code/gym_note/src/~ui.c",
+        "arguments":  [
+                          "clang",
+                          "-Ilibs/include",
+                          "-include",
+                          "UNITY_BUILD.c",
+                          "D:/Projects/Code/gym_note/src/~ui.c"
                       ]
     }
 ]

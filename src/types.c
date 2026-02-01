@@ -14,7 +14,7 @@ typedef char * C_String;
 #define GIGABYTE (1024ULL * MEGABYTE)
 
 typedef struct string {
-	U8 *buffer;
+	char *buffer;
 	U64 length;
 	U64 capacity;
 } String;
@@ -55,3 +55,24 @@ typedef struct {
     I32 z;
 } Vec3;
 typedef Vec3 V3;
+
+typedef struct set {
+	int weight;
+	int reps;
+} Set;
+
+typedef struct session {
+	SDL_Time date_time;
+	int set_count;
+	Set *sets;
+} Session;
+
+typedef struct exercise {
+	String name;
+	Session *history;
+} Exercise;
+
+typedef struct exercise_group {
+	int count;
+	Exercise *exercises;
+} Exercise_Group;

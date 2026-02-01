@@ -1,5 +1,6 @@
 // #define SDL_MAIN_HANDLED
 
+#include "SDL3/SDL_events.h"
 U64 get_cstring_length(char *text) {
 	int string_index = 0;
 	for (; text[string_index] != '\0'; string_index++);
@@ -32,6 +33,12 @@ struct Window window = {
 	.y = 640,
 };
 
+typedef struct User {
+	bool is_left_clicking;
+} User;
+
+User user = {0};
+
 int main(void) {
 	bool ok = true;
 	ok = SDL_Init(SDL_INIT_VIDEO);
@@ -57,25 +64,41 @@ int main(void) {
 	}
 
 	// Create the renderer engine
-	TTF_TextEngine *engine = TTF_CreateRendererTextEngine(renderer);
-	if (!engine) {
+	TTF_TextEngine *text_engine = TTF_CreateRendererTextEngine(renderer);
+	if (!text_engine) {
 		SDL_Log("Engine failure: %s", SDL_GetError());
 	}
 
 	// Open your font as usual
-	TTF_Font *font = TTF_OpenFont("assets/PlaywriteGBJGuides-Regular.ttf", 24.0f);
+	TTF_Font *font = TTF_OpenFont("assets/GoogleSans-Regular.ttf", 24.0f);
 	if (!font) {
 		SDL_Log("Couldn't open text: %s", SDL_GetError());
 	}
 
 	// Create the text object
 	// The '0' indicates the string is null-terminated
-	TTF_Text *text = TTF_CreateText(engine, font, "Hello SDL3!", 0);
+	TTF_Text *text = TTF_CreateText(text_engine, font, "Hello SDL3!", 0);
 
 	// You can set the color directly on the object
 	TTF_SetTextColor(text, 255, 255, 255, 255); // White
 
+	String s1 = create_string("Lat pulldown", &program_arena);
+	String s2 = create_string("Bayesian cable curl", &program_arena);
+	String s3 = create_string("Flat Bench Press", &program_arena);
+
+	char *entries[] = {
+		"Lat pulldown",
+		"Bayesian cable curl",
+		"Flat Bench Press",
+	};
+
+	TTF_Text *text_entries[3];
+	for (int i = 0; i < 3; i++) {
+		text_entries[i] = TTF_CreateText(text_engine, font, entries[i], 0);
+	}
+
 	bool window_should_close = false;
+	int frame_idx = 0;
 	while (!window_should_close) {
 		SDL_Event e;
 		while (SDL_PollEvent(&e)) {
@@ -84,6 +107,14 @@ int main(void) {
 			} else if (e.type == SDL_EVENT_KEY_DOWN) {
 				if (e.key.scancode == SDL_SCANCODE_ESCAPE) {
 					window_should_close = true;
+				}
+			} else if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
+				if (e.button.button == SDL_BUTTON_LEFT) {
+					user.is_left_clicking = true;
+				}
+			} else if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
+				if (e.button.button == SDL_BUTTON_LEFT) {
+					user.is_left_clicking = false;
 				}
 			}
 		}
@@ -96,10 +127,54 @@ int main(void) {
 
 		// SDL_TTF
 		// Simple one-line draw command
-		TTF_DrawRendererText(text, 100.0f, 100.0f);
-		SDL_FRect rect = {100, 100, 100, 50};
-		SDL_SetRenderDrawColorFloat(renderer, 1, 0, 0, 1);
-		SDL_RenderFillRect(renderer, &rect);
+		// TTF_DrawRendererText(text, 100.0f, 100.0f);
+		// SDL_FRect rect = {100, 100, 100, 50};
+		// SDL_SetRenderDrawColorFloat(renderer, 1, 0, 0, 1);
+		// SDL_RenderFillRect(renderer, &rect);
+		
+		// int font_height = TTF_GetFontHeight(font);
+		// for (int i = 0; i < 3; i++) {
+		// 	TTF_DrawRendererText(text_entries[i], 10.0f, font_height*i);
+		// }
+
+		Exercise exercises[] = {
+			(Exercise){
+				.name = "Exercise 1",
+			},
+			(Exercise){
+				.name = "Exercise 2",
+			},
+			(Exercise){
+				.name = "Exercise 3",
+			},
+		};
+		
+		Exercise_Group exercise_group = {
+			.exercises = exercises,
+			.count = 3,
+		};
+
+		// draw_exercises_menu(&exercise_group, text_engine, font);
+		// SDL_Log("frame: %d\n", frame_idx);
+		// frame_idx++;
+
+		// UI
+		UI_Element hierarchy;
+		// UI_configure_area(&hierarchy, 5, 5, 100, 500, UI_VERTICAL, NULL);
+		UI_configure_area(&hierarchy, 5, 5, 500, 100, UI_HORIZONTAL, NULL);
+		UI_Element buttons[5];
+		for (int i = 0; i < 5; i++) {
+			SDL_FColor color;
+			if (i % 2) {
+				color = (SDL_FColor){1, 0, 0, 1};
+			} else {
+				color = (SDL_FColor){0, 0, 1, 1};
+			}
+			UI_configure_button(&buttons[i], NULL, &color, NULL);
+		}
+		hierarchy.elements = buttons;
+		hierarchy.elements_count = 5;
+		UI_draw_hierarchy(renderer, &hierarchy);
 
 		SDL_RenderPresent(renderer);
 
@@ -108,7 +183,7 @@ int main(void) {
 	}
 
 	TTF_DestroyText(text);
-	TTF_DestroyRendererTextEngine(engine);
+	TTF_DestroyRendererTextEngine(text_engine);
 	TTF_CloseFont(font);
 	TTF_Quit();
 	SDL_DestroyRenderer(renderer);
