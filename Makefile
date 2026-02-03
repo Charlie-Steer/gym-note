@@ -4,8 +4,8 @@ PROGRAM = bin/gym_note.exe
 
 CC = clang
 
-CFLAGS = -Ilibs/include
-LDFLAGS = -Llibs/lib -lSDL3 -lSDL3_ttf
+CFLAGS = -Ilibs/include -g -gcodeview
+LDFLAGS = -Llibs/lib -lSDL3 -lSDL3_ttf -Wl,-debug
 
 # SRCS = $(wildcard src/*.c)
 SRCS = $(wildcard src/*.c src/*.cpp src/*.h src/*.hpp)

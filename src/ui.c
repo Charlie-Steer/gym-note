@@ -53,7 +53,7 @@ typedef struct UI_Element {
     F32 x, y, w, h;
     SDL_FColor background_color;
     SDL_FColor text_color;
-    void (*action)(void);
+    void (*action)(void *);
     struct UI_Element *elements;
     I32 elements_count;
     UI_Layout_Direction layout_direction;
@@ -70,7 +70,7 @@ void UI_configure_area(UI_Element *area, I32 x, I32 y, I32 w, I32 h, UI_Layout_D
     area->grid_config = grid_config;
 }
 
-void UI_configure_button(UI_Element *button, void (*action)(void), SDL_FColor *background_color, SDL_FColor *text_color) {
+void UI_configure_button(UI_Element *button, void (*action)(void *), SDL_FColor *background_color, SDL_FColor *text_color) {
     button->element_type = UI_BUTTON;
     button->action = action;
     if (background_color == NULL) {
@@ -94,6 +94,15 @@ void UI_append_child_element(Arena *arena, UI_Element *parent, UI_Element *child
         elements[element_idx] = parent->elements[element_idx];
     }
     elements[element_idx] = *child;
+}
+
+void UI_create_children(Arena *arena, UI_Element *parent, I32 count) {
+    parent->elements_count = count;
+    parent->elements = arena_allocate(arena, count * sizeof(UI_Element));
+}
+
+void UI_change_color(void *ui_element) {
+    ((UI_Element *)ui_element)->background_color = (SDL_FColor){0, 1, 1, 1};
 }
 
 // TODO: Make it handle buttons as parent and infinitely nested elements.
@@ -120,6 +129,11 @@ void UI_draw_hierarchy(SDL_Renderer *renderer, UI_Element *parent) {
                 }
             } else {
                 // TODO.
+            }
+            if (mouse.is_left_clicking && mouse.x > rect.x && mouse.x < rect.x + rect.w && mouse.y > rect.y && mouse.y < rect.y + rect.h) {
+                if (child->action != NULL) {
+                    child->action(child); // NOTE: Such a hardcoded argument is probably not acceptable. I can provide to UI_Element a field for a pointer to a struct with self, parent and whatever else I need depending on the function.
+                }
             }
             SDL_FColor color = {child->background_color.r, child->background_color.g, child->background_color.b, child->background_color.a};
             SDL_SetRenderDrawColorFloat(renderer, color.r, color.g, color.b, color.a);

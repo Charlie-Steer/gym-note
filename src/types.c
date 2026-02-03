@@ -76,3 +76,22 @@ typedef struct exercise_group {
 	int count;
 	Exercise *exercises;
 } Exercise_Group;
+
+struct Window {
+	I32 x;
+	I32 y;
+	SDL_Window *handle;
+};
+
+struct Window window = {
+	.x = 360,
+	.y = 640,
+};
+
+typedef struct Mouse {
+	bool is_left_clicking;
+	F32 x;
+	F32 y;
+} Mouse;
+
+Mouse mouse = {0};

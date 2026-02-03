@@ -4,3 +4,7 @@ old/
 test/
 build/
 gym_note.exe
+*.zip
+*.ilk
+*.pdb
+*.rdi

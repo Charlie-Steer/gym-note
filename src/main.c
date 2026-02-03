@@ -1,6 +1,5 @@
 // #define SDL_MAIN_HANDLED
 
-#include "SDL3/SDL_events.h"
 U64 get_cstring_length(char *text) {
 	int string_index = 0;
 	for (; text[string_index] != '\0'; string_index++);
@@ -21,23 +20,6 @@ String create_string(char *text, Arena *arena) {
 	memcpy(string.buffer, text, string.length + 1);
 	return string;
 }
-
-struct Window {
-	I32 x;
-	I32 y;
-	SDL_Window *handle;
-};
-
-struct Window window = {
-	.x = 360,
-	.y = 640,
-};
-
-typedef struct User {
-	bool is_left_clicking;
-} User;
-
-User user = {0};
 
 int main(void) {
 	bool ok = true;
@@ -110,15 +92,16 @@ int main(void) {
 				}
 			} else if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
 				if (e.button.button == SDL_BUTTON_LEFT) {
-					user.is_left_clicking = true;
+					mouse.is_left_clicking = true;
 				}
-			} else if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
+			} else if (e.type == SDL_EVENT_MOUSE_BUTTON_UP) {
 				if (e.button.button == SDL_BUTTON_LEFT) {
-					user.is_left_clicking = false;
+					mouse.is_left_clicking = false;
 				}
 			}
 		}
 		double now = (double)SDL_GetTicks() / 1000.0;
+		SDL_GetMouseState(&mouse.x, &mouse.y);
 		
 		// SDL_SetRenderDrawColorFloat(renderer, 0, 0, 1, 1);
 		float brightness = .2;
@@ -159,11 +142,24 @@ int main(void) {
 		// frame_idx++;
 
 		// UI
-		UI_Element hierarchy;
+		UI_Element hierarchy = {0};
 		// UI_configure_area(&hierarchy, 5, 5, 100, 500, UI_VERTICAL, NULL);
 		UI_configure_area(&hierarchy, 5, 5, 500, 100, UI_HORIZONTAL, NULL);
-		UI_Element buttons[5];
-		for (int i = 0; i < 5; i++) {
+		I32 child_count = 5;
+		UI_create_children(&frame_arena, &hierarchy, child_count);
+		for (int i = 0; i < child_count; i++) {
+			SDL_FColor color;
+			if (i % 2) {
+				color = (SDL_FColor){1, 0, 0, 1};
+			} else {
+				color = (SDL_FColor){0, 0, 1, 1};
+			}
+			UI_configure_button(&hierarchy.elements[i], &UI_change_color, &color, NULL);
+		}
+		/*
+		const I32 button_count = 5;
+		UI_Element buttons[button_count];
+		for (int i = 0; i < button_count; i++) {
 			SDL_FColor color;
 			if (i % 2) {
 				color = (SDL_FColor){1, 0, 0, 1};
@@ -173,7 +169,8 @@ int main(void) {
 			UI_configure_button(&buttons[i], NULL, &color, NULL);
 		}
 		hierarchy.elements = buttons;
-		hierarchy.elements_count = 5;
+		hierarchy.elements_count = button_count;
+		*/
 		UI_draw_hierarchy(renderer, &hierarchy);
 
 		SDL_RenderPresent(renderer);
