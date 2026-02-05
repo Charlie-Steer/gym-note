@@ -144,7 +144,11 @@ int main(void) {
 		// UI
 		UI_Element hierarchy = {0};
 		// UI_configure_area(&hierarchy, 5, 5, 100, 500, UI_VERTICAL, NULL);
-		UI_configure_area(&hierarchy, 5, 5, 500, 100, UI_HORIZONTAL, NULL);
+		UI_Grid_Config grid_config = {
+			.max_elements_per_line = 3,
+		};
+		// UI_configure_area(&hierarchy, 5, 5, 500, 100, UI_HORIZONTAL, NULL);
+		UI_configure_area(&hierarchy, 5, 5, 500, 100, UI_HORIZONTAL, &grid_config);
 		I32 child_count = 5;
 		UI_create_children(&frame_arena, &hierarchy, child_count);
 		for (int i = 0; i < child_count; i++) {
@@ -156,21 +160,7 @@ int main(void) {
 			}
 			UI_configure_button(&hierarchy.elements[i], &UI_change_color, &color, NULL);
 		}
-		/*
-		const I32 button_count = 5;
-		UI_Element buttons[button_count];
-		for (int i = 0; i < button_count; i++) {
-			SDL_FColor color;
-			if (i % 2) {
-				color = (SDL_FColor){1, 0, 0, 1};
-			} else {
-				color = (SDL_FColor){0, 0, 1, 1};
-			}
-			UI_configure_button(&buttons[i], NULL, &color, NULL);
-		}
-		hierarchy.elements = buttons;
-		hierarchy.elements_count = button_count;
-		*/
+
 		UI_draw_hierarchy(renderer, &hierarchy);
 
 		SDL_RenderPresent(renderer);

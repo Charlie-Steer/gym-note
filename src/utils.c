@@ -1,3 +1,4 @@
+#include "SDL3/SDL_log.h"
 void log_error(Error error) {
 	char *error_message;
 	switch (error) {
@@ -40,4 +41,26 @@ void log_message(char *message) {
 
 void log_string(String message) {
 	printf("%s\n", message.buffer);
+}
+
+I32 I32_division(I32 a, I32 b) {
+	if (b == 0) {
+		return 0;
+	}
+	return a / b;
+}
+
+void FRect_print(const SDL_FRect *rect, const char *name) {
+	if (name != NULL) {
+		SDL_Log("%s ", name);
+	}
+	SDL_Log(
+		"{\n"
+		"\tx: %f,\n"
+		"\ty: %f,\n"
+		"\tw: %f,\n"
+		"\th: %f,\n"
+		"}\n",
+		rect->x, rect->y, rect->w, rect->h
+	);
 }
