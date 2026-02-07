@@ -113,34 +113,38 @@ void UI_draw_grid(SDL_Renderer *renderer, UI_Element *parent) {
 	F32 child_width = 0;
 	F32 child_height = 0;
 	UI_Grid_Config *grid_config = parent->grid_config;
-	SDL_Log("Draw Grid.\n");
-	// WARNING: Missing base cases here!
-	// WARNING: Missing base cases here!
-	// WARNING: Missing base cases here!
-	// WARNING: Missing base cases here!
-	// WARNING: Missing base cases here!
-	// WARNING: Missing base cases here!
 	if (parent->layout_direction == UI_HORIZONTAL) {
 		child_width = parent->w / grid_config->max_elements_per_line;
-	} else {
-		child_height = parent->w / grid_config->max_elements_per_line;
+	} else if (parent->layout_direction == UI_VERTICAL) {
+		child_height = parent->h / grid_config->max_elements_per_line;
 	}
 	for (I32 child_idx = 0; child_idx < parent->child_count; child_idx++) {
-		SDL_Log("loop start\n");
 		SDL_FRect rect = {0};
+		// ATTENTION: Mirror logic below.
 		if (parent->layout_direction == UI_HORIZONTAL) {
 			rect.w = child_width;
-			rect.x = parent->x + (child_width * (parent->child_count % grid_config->max_elements_per_line));
-			// int line_count = grid_config->max_elements_per_line / parent->child_count;
-			I32 current_element_line_index = I32_division(grid_config->max_elements_per_line, child_idx);
+			rect.x = parent->x + (child_width * (child_idx % grid_config->max_elements_per_line));
+			I32 current_element_line_index = I32_division(child_idx, grid_config->max_elements_per_line);
 			if (grid_config->set_manual_secondary_axis_element_length) {
+				// NOTE: Untested.
 				rect.h = grid_config->secondary_axis_element_length;
 			} else {
-				rect.h = parent->h / I32_division(grid_config->max_elements_per_line, parent->child_count);
+				rect.h = parent->h / ceilf((F32)parent->child_count / grid_config->max_elements_per_line);
 			}
 			rect.y = parent->y + (rect.h * current_element_line_index);
-		} else {
+		// ATTENTION: Mirror logic above.
+		} else if (parent->layout_direction == UI_VERTICAL) {
 			// TODO
+			rect.h = child_height;
+			rect.y = parent->y + (child_height * (child_idx % grid_config->max_elements_per_line));
+			I32 current_element_line_index = I32_division(child_idx, grid_config->max_elements_per_line);
+			if (grid_config->set_manual_secondary_axis_element_length) {
+				// NOTE: Untested.
+				rect.w = grid_config->secondary_axis_element_length;
+			} else {
+				rect.w = parent->w / ceilf((F32)parent->child_count / grid_config->max_elements_per_line);
+			}
+			rect.x = parent->x + (rect.w * current_element_line_index);
 		}
 
 		SDL_Log("before mouse\n");

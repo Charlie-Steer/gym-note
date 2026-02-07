@@ -147,8 +147,9 @@ int main(void) {
 		UI_Grid_Config grid_config = {
 			.max_elements_per_line = 3,
 		};
-		// UI_configure_area(&hierarchy, 5, 5, 500, 100, UI_HORIZONTAL, NULL);
-		UI_configure_area(&hierarchy, 5, 5, 500, 100, UI_HORIZONTAL, &grid_config);
+		// UI_configure_area(&hierarchy, 5, 5, 500, 100, UI_HORIZONTAL, &grid_config);
+		I32 offset = 5;
+		UI_configure_area(&hierarchy, offset, offset, window.x - (offset * 2), window.y - (offset * 2), UI_HORIZONTAL, &grid_config);
 		I32 child_count = 5;
 		UI_create_children(&frame_arena, &hierarchy, child_count);
 		for (int i = 0; i < child_count; i++) {
