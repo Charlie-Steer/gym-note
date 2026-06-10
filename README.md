@@ -2,5 +2,7 @@ I wanted a simple app to track the current weight of gym exercises for myself th
 
 It's currently unfinished, but it ended up being an interesting exploration of how to build my own UI system using a simple rendering library. I later expanded on it for another project.
 
+Built with C and SDL3.
+
 > [!NOTE]
 > Can currently only be built on Windows as I was exploring a Windows-only debugger.
